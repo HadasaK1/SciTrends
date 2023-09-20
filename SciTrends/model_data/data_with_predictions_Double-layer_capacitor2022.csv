@@ -1,0 +1,30 @@
+,Term,Year,norm_publications_count,Data
+0,Double-layer capacitor,1983,0.3230078490907329,real data
+1,Double-layer capacitor,1996,0.21795609492423848,real data
+2,Double-layer capacitor,2001,0.18260671079662177,real data
+3,Double-layer capacitor,2002,0.35368808248006084,real data
+4,Double-layer capacitor,2004,0.4689317110380273,real data
+5,Double-layer capacitor,2005,0.28554132925199593,real data
+6,Double-layer capacitor,2006,0.5332501463105089,real data
+7,Double-layer capacitor,2007,0.38132571698767936,real data
+8,Double-layer capacitor,2008,1.0749862640644037,real data
+9,Double-layer capacitor,2009,1.3673281496403928,real data
+10,Double-layer capacitor,2010,1.8043874210845854,real data
+11,Double-layer capacitor,2011,1.4697078514732842,real data
+12,Double-layer capacitor,2012,2.385163548829802,real data
+13,Double-layer capacitor,2013,3.56499729147157,real data
+14,Double-layer capacitor,2014,3.234428920107118,real data
+15,Double-layer capacitor,2015,4.848993595353869,real data
+16,Double-layer capacitor,2016,4.979490722586347,real data
+17,Double-layer capacitor,2017,4.140761347986516,real data
+18,Double-layer capacitor,2018,4.216827806206431,real data
+19,Double-layer capacitor,2019,5.36113977831687,real data
+20,Double-layer capacitor,2020,5.063779214345503,real data
+21,Double-layer capacitor,2021,3.7562623059638236,real data
+22,Double-layer capacitor,2022,3.6088665339656365,real data
+23,Double-layer capacitor,2023,-29.1864961533347,prediction
+24,Double-layer capacitor,2024,85.62780844675035,prediction
+25,Double-layer capacitor,2025,129.95971701231883,prediction
+26,Double-layer capacitor,2026,115.07271761677066,prediction
+27,Double-layer capacitor,2026,354.8837436322701,prediction
+28,Double-layer capacitor,2027,784.9606106238625,prediction

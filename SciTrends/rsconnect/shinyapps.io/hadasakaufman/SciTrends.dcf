@@ -1,0 +1,12 @@
+name: SciTrends
+title: SciTrends
+username: hadasakaufman
+account: hadasakaufman
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9755381
+bundleId: 7644604
+url: https://hadasakaufman.shinyapps.io/SciTrends/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
