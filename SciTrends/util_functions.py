@@ -9,7 +9,7 @@ import sklearn.metrics as metrics
 from sklearn.base import BaseEstimator, TransformerMixin
 from sentence_transformers import SentenceTransformer
 
-#pd.set_option('mode.use_inf_as_na', True)
+pd.set_option('mode.use_inf_as_na', True)
 
 
 def regression_results(y_true, y_pred):
@@ -38,7 +38,7 @@ def regression_results(y_true, y_pred):
         
 
 def run_eval(X_train,y_train,X_test,y_test):
-    clf = CatBoostRegressor(verbose=0,iterations=600,has_time=True) # verbose=False,
+    clf = CatBoostRegressor(verbose=0,has_time=True)
     clf.fit(X_train,y_train)
 #     clf.fit(X_train,y_train,eval_set=(X_test,y_test))#,plot=True)
     
@@ -92,18 +92,20 @@ class TimeSeriesFeatureExtractor(BaseEstimator, TransformerMixin):
             
             X[f'{col}_lag1'] = group[col].shift(1)
             X[f'{col}_lag2'] = group[col].shift(2)
+            X[f'{col}_lag3'] = group[col].shift(3)
 
             X[f'{col}_pct_change_lag1'] = group[f'{col}_pct_change'].shift(1)
             X[f'{col}_pct_change_lag2'] = group[f'{col}_pct_change'].shift(2)
             X[f'{col}_diff1_lag1'] = group[f'{col}_diff1'].shift(1)
             X[f'{col}_diff1_lag2'] = group[f'{col}_diff1'].shift(2)
-
+            X[f'{col}_diff1_lag4'] = group[f'{col}_diff1'].shift(4)
 
             X[f'{col}_diff2_lag1'] = group[f'{col}_diff2'].shift(1)
             X[f'{col}_diff2_lag2'] = group[f'{col}_diff2'].shift(2)
+
             X[f'{col}_pct_change_diff1_lag1'] = group[f'{col}_pct_change_diff1'].shift(1)
             X[f'{col}_pct_change_diff1_lag2'] = group[f'{col}_pct_change_diff1'].shift(2)
-            X[f'{col}_pct_change_diff1_lag3'] = group[f'{col}_pct_change_diff1'].shift(3)
+            X[f'{col}_pct_change_diff1_lag4'] = group[f'{col}_pct_change_diff1'].shift(4)
             ### extract deeper features for the target column
             if col in self.target_col:
                 X[f'{col}_lag3'] = group[col].shift(3)
@@ -148,7 +150,7 @@ class TimeSeriesFeatureExtractor(BaseEstimator, TransformerMixin):
                 X[f'{col}_pct_change_rolling_min_10'] = group[f'{col}_pct_change'].transform(lambda x: x.shift().rolling(window=10, min_periods=1).min())
                 X[f'{col}_pct_change_rolling_avg_10'] = group[f'{col}_pct_change'].transform(lambda x: x.shift().rolling(window=10, min_periods=1).mean())
 
-                X[f'{col}_pct_change_positives_6'] = group[f'{col}_pct_change'].transform(lambda x: x.shift().rolling(window=6, min_periods=1).agg(lambda x: x[x>0.03].sum()))
+                X[f'{col}_pct_change_positives_6'] = group[f'{col}_pct_change'].transform(lambda x: x.shift().rolling(window=6, min_periods=1).agg(lambda x: x[x>0.01].sum()))
 
                 X[f'{col}_pct_change_diff1_rolling_max_7'] = group[f'{col}_pct_change_diff1'].transform(lambda x: x.shift().rolling(window=7, min_periods=1).max())
                 X[f'{col}_pct_change_diff1_rolling_min_7'] = group[f'{col}_pct_change_diff1'].transform(lambda x: x.shift().rolling(window=7, min_periods=1).min())
@@ -210,11 +212,11 @@ pipe = Pipeline([
 
 
 def get_forecast_predictions(df_query:pd.DataFrame,max_forecast_range=6,TARGET_COL='norm_publications_count'):
-    df_query = df_query.loc[df_query["Year"]>=1980].sort_values(["Year","Term"],ascending=True).reset_index(drop=True)
+    df_query = df_query.loc[df_query["Year"]>=1979].sort_values(["Year","Term"],ascending=True).reset_index(drop=True)
     df_query = pipe.transform(df_query)
 
     ## model works better when trained on later data
-    df_query = df_query.loc[df_query["Year"]>=2001].reset_index(drop=True)
+    df_query = df_query.loc[df_query["Year"]>=1994].reset_index(drop=True) # 2001
     
     df_res = df_query[["Term","Year",TARGET_COL]].copy()
     for i in range(max_forecast_range):
@@ -232,12 +234,12 @@ def get_forecast_predictions(df_query:pd.DataFrame,max_forecast_range=6,TARGET_C
         y_test = y_test[mask]
         X_test = X_test[mask]
 
-#         print("extra train?, on query data")
-        model2 = CatBoostRegressor(iterations=10,learning_rate=0.1,verbose=False,has_time=True)
-        model2.fit(X_test,y_test,init_model=model,cat_features=["Term"])
-        y_pred_ft = model2.predict(df_query)
+# #         print("extra train?, on query data")
+#         model2 = CatBoostRegressor(iterations=10,learning_rate=0.1,verbose=False,has_time=True)
+#         model2.fit(X_test,y_test,init_model=model,cat_features=["Term"])
+#         y_pred_ft = model2.predict(df_query)
         
         df_res[f"pred_{i+1}Y"] = y_pred
-        df_res[f"pred_ft_{i+1}Y"] = y_pred_ft
+        # df_res[f"pred_ft_{i+1}Y"] = y_pred_ft
     return df_res
         

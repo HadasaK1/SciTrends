@@ -69,7 +69,7 @@ def create_term_table(term):
     # download general data
     general_pub = download_timeline_table("all[sb]")
     print("term_review_pub")
-    print(term_review_pub)
+    # print(term_review_pub)
     #general_pub.to_csv("./model_data/generallllllllllllllllllll.csv")
     general_pub.rename(columns={'Number of Results': 'general_publication'}, inplace=True)
 
@@ -87,8 +87,29 @@ def create_term_table(term):
                                                              "general_publication"]) * 100000
     # remove the last roe of the last year (the last year may be biased)
     term_general_df = term_general_df[:-1]
-    #term_general_df.to_csv("model_data/" + term + ".csv")
+    #term_general_df.to_csv("model_data/" + term + ".csv") #ORIG
+    # #DAN: Uncommented + remove index:
+    # term_general_df.to_csv("model_data/" + term + ".csv",index=False)
     return term_general_df
 
 #data=create_term_table(term)
 #data.to_csv("G:/My Drive/PhD/Trends/model_data/"+term+".csv")
+
+
+def download_all_training_terms(terms_file= "training_terms_data.csv"):#"training_data_all.csv"):
+    terms_list = pd.read_csv(terms_file)["Term"].unique() # [0:63]
+    print(len(terms_list))
+    all_terms_df = pd.DataFrame()
+    for i,term in enumerate(terms_list):
+        if i//5==0: print(i)
+        res = create_term_table(term)
+        # print(res)
+        all_terms_df = pd.concat([all_terms_df,res])
+    all_terms_df = all_terms_df.round(5).drop_duplicates().sort_values(by=["Year","Term"],ascending=True)
+    all_terms_df = all_terms_df.loc[all_terms_df["Year"]>1920].reset_index(drop=True)
+    print(all_terms_df.shape)
+    print(all_terms_df.nunique())
+    all_terms_df.to_csv("full_training_data.csv",index=False)
+
+if __name__ =="__main__":
+    download_all_training_terms()
